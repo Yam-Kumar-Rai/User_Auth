@@ -4,7 +4,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 require('dotenv').config();
-const { createUserTable } = require('./models/userModels');
+const { createUserTable } = require('./models/userModel');
+const adminRoutes = require('./routes/adminRoutes');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 
 const app = express();
@@ -23,20 +26,16 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
+app.use('/', authRoutes);
+app.use('/Admin', adminRoutes);
+app.use('/users', userRoutes);
 
 
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-
-// Routes
-// const adminRoutes = require('./routes/adminRoutes');
-const authRoutes = require('./routes/authRoutes');
-// const userRoutes = require('./routes/userRoutes');
-app.use('/', authRoutes);
-// app.use('/', adminRoutes);
-// app.use('/', userRoutes);
+const { createFoodTable } = require('./models/foodModel');
+createFoodTable();
 
 
 // Schema creation
